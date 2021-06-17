@@ -5,9 +5,10 @@
 
 const fs = require('fs')
 const tmi = require('tmi.js')
+const http = require('http')
 require('dotenv').config()
-
 const connect_API = './handlers/connect_API'
+const { requestAPI } = require('./handlers/connect_API.js')
 
 const startBot = access_token => {
     // Conf for Twitch Bot
@@ -29,8 +30,6 @@ const startBot = access_token => {
         const handler = require('./handlers/handler.js')(client, access_token)
  
         client.on('message', handler.message)
-        client.on('join', handler.join)
-        client.on('part', handler.part)
         client.on('raided', handler.raided)
     })
 }
@@ -61,7 +60,13 @@ const getStoredToken = data => {
     return undefined
 }
 
-if(!process.env.API){
+
+async function prout(token){
+    const gaz = await requestAPI(token,'users?login=zerwyn')
+    console.log(gaz)
+}
+
+if(process.env.API !== '1'){
     startBot()
 } else {
     console.log('Use Twitch API')
@@ -71,7 +76,8 @@ if(!process.env.API){
 
         const token = getStoredToken(data)
         if(token){
-            startBot(token)
+            prout(token)
+            // startBot(token)
         } else {
             reniewAPIToken().then(newToken => startBot(newToken))
             .catch(console.error)
@@ -79,9 +85,7 @@ if(!process.env.API){
     })
 }
 
-
-
-
-
-
-
+const serverHTTP = http.createServer((req, res) => {
+    res.end('Coucou')
+})
+.listen(8080)

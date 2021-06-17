@@ -32,3 +32,25 @@ module.exports = new Promise((s,f) => {
     req.write(data)
     req.end()
 })
+
+module.exports.requestAPI = (apiToken, request) => new Promise((s,f) => {
+
+    if(!request){
+        console.error('Request path is empty')
+        return
+    }
+
+    const user_options = {
+        headers: {
+            'client-id': CLIENTID,
+            'Authorization': 'Bearer '+ apiToken
+        }
+    }
+    
+    https.get(`https://api.twitch.tv/helix/${request}`, user_options, res => {
+        res.on('data', d => {
+            const json = JSON.parse(d)
+            s(json)
+        })
+    }).on('error', e => f(e))
+})
