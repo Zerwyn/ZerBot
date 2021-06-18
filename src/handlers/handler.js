@@ -18,7 +18,7 @@ const NotifyInactivity = (inactivy, NotifyMinDelay) => {
     return now
 }
 
-module.exports = (client, ACCESSTOKEN) => {
+module.exports = client => {
     const module = {}
     const AFKMinDelay = 10  // delay between 2 messages before sending a notification (in min)
     let lastMessageTimer = Date.now()
@@ -32,10 +32,7 @@ module.exports = (client, ACCESSTOKEN) => {
         // Execute command ("!command")
         if(msg[0] === '!') {
             // Remove ! and message spaces
-            const result = await commands(msg.substring(1).trim().toLowerCase(), userstate, ACCESSTOKEN)
-            if(result){
-                client.say(channel, result)
-            }
+            commands(client, channel, msg.substring(1).trim().toLowerCase(), userstate).catch(console.error)
         }
     }
 
