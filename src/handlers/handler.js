@@ -11,7 +11,7 @@ notificationSound.volume = 1.5
 // Send sound if message since N time
 const NotifyInactivity = (inactivy, NotifyMinDelay) => {
     const now = Date.now()
-    if(now - inactivy > NotifyMinDelay * 30000) {
+    if(now - inactivy > NotifyMinDelay * 60000) {
         console.log(`New message after more than ${NotifyMinDelay}`)
         notificationSound.play()
     }
